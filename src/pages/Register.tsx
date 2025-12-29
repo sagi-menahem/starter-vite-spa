@@ -71,7 +71,7 @@ export function Register() {
       );
 
       navigate('/dashboard', { replace: true });
-    } catch (err) {
+    } catch {
       setError(UI_LABELS.form.errorMessage);
     } finally {
       setIsLoading(false);

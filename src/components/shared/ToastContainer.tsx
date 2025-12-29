@@ -5,12 +5,12 @@
  * Uses Framer Motion for smooth enter/exit animations.
  */
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, CheckCircle, AlertCircle, AlertTriangle, Info } from 'lucide-react';
-import { useUIStore } from '@/stores/ui.store';
 import { UI_LABELS } from '@/config/site';
+import { DURATION, EASING, fadeInUp } from '@/lib/animations';
 import { cn } from '@/lib/utils';
-import { fadeInUp, DURATION, EASING } from '@/lib/animations';
+import { useUIStore } from '@/stores/ui.store';
+import { AnimatePresence, motion } from 'framer-motion';
+import { AlertCircle, AlertTriangle, CheckCircle, Info, X } from 'lucide-react';
 
 const toastIcons = {
   success: CheckCircle,
@@ -60,11 +60,11 @@ export function ToastContainer() {
               )}
               role="alert"
             >
-              <Icon className={cn('size-5 flex-shrink-0 mt-0.5', iconStyles[toast.type])} />
+              <Icon className={cn('size-5 shrink-0 mt-0.5', iconStyles[toast.type])} />
               <p className="flex-1 text-sm font-medium">{toast.message}</p>
               <button
                 onClick={() => removeToast(toast.id)}
-                className="flex-shrink-0 p-1 rounded hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+                className="shrink-0 p-1 rounded hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
                 aria-label={UI_LABELS.common.close}
               >
                 <X className="size-4" />

@@ -5,9 +5,10 @@
  * when globalLoading is true in the UI store.
  */
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { useUIStore } from '@/stores/ui.store';
+import { UI_LABELS } from '@/config/site';
 import { DURATION, EASING } from '@/lib/animations';
+import { useUIStore } from '@/stores/ui.store';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export function GlobalLoadingBar() {
   const { globalLoading } = useUIStore();
@@ -22,7 +23,7 @@ export function GlobalLoadingBar() {
           transition={{ duration: DURATION.slow, ease: EASING.smooth }}
           className="fixed top-0 inset-x-0 z-50 h-1 bg-primary origin-left"
           role="progressbar"
-          aria-label="Loading"
+          aria-label={UI_LABELS.common.loading}
         >
           {/* Animated shimmer effect */}
           <motion.div
@@ -32,7 +33,7 @@ export function GlobalLoadingBar() {
               repeat: Infinity,
               ease: 'linear',
             }}
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+            className="absolute inset-0 bg-linear-to-r from-transparent via-white/30 to-transparent"
           />
         </motion.div>
       )}
