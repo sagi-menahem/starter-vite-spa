@@ -761,6 +761,167 @@ All `VITE_` prefixed variables are exposed to the client.
 
 ---
 
+## 18. NPM Scripts Reference
+
+### Development Scripts
+```bash
+npm run dev           # Start dev server (auto-kills port 3000)
+npm run dev:fresh     # Fresh start (kills ports 3000-3002)
+npm run preview       # Preview production build
+```
+
+### Build Scripts
+```bash
+npm run build         # Production build (runs env check first)
+npm run analyze       # Build with bundle visualization (opens stats.html)
+npm run clean         # Remove dist, node_modules, .vite
+npm run clean:dist    # Remove dist and .vite only
+```
+
+### Code Quality Scripts
+```bash
+npm run lint          # Run ESLint
+npm run lint:fix      # Run ESLint with auto-fix
+npm run format        # Format all files with Prettier
+npm run format:check  # Check formatting without changes
+npm run check         # Run both lint and format:check
+npm run env:check     # Verify .env file has all required variables
+```
+
+### Pre-build Environment Check
+The `env:check` script validates that your `.env` file exists and contains all required variables before building. This prevents silent build failures in CI/CD pipelines.
+
+Required variables:
+- `VITE_APP_NAME` - Application display name
+- `VITE_APP_URL` - Production URL (used for canonical URLs and OG images)
+- `VITE_API_BASE_URL` - Backend API base URL
+
+---
+
+## 19. DynamicIcon Component
+
+### Purpose
+Renders Lucide icons dynamically from string names while maintaining tree-shaking optimization through a whitelist approach.
+
+### Usage
+```tsx
+import { DynamicIcon } from '@/components/shared';
+
+// In component
+<DynamicIcon name="zap" size={24} className="text-primary" />
+<DynamicIcon name="arrow-right" />  // kebab-case supported
+<DynamicIcon name="CheckCircle" />  // PascalCase also works
+```
+
+### Available Icons
+The component includes 80+ commonly used icons organized by category:
+- **UI**: star, check, x, chevron-*, arrow-*, menu, search, settings, user
+- **Marketing**: zap, rocket, shield, sparkles, target, trophy, heart, flame
+- **Content**: pencil, image, file-text, book, lightbulb, message-*
+- **Tech**: code, terminal, globe, server, database, cloud, cpu, layers
+- **Status**: clock, calendar, check-circle, alert-circle, info, loader
+
+### Adding New Icons
+1. Import the icon from `lucide-react` in `DynamicIcon.tsx`
+2. Add to the `ICON_MAP` with a kebab-case key
+3. The icon will be tree-shaken if unused
+
+```typescript
+// In DynamicIcon.tsx
+import { NewIcon } from 'lucide-react';
+
+const ICON_MAP = {
+  // ... existing icons
+  'new-icon': NewIcon,
+};
+```
+
+### CMS Integration
+Icon names can be stored in CMS/config and rendered dynamically:
+```tsx
+// From DEFAULTS in site.ts
+defaultFeatures: [
+  { title: 'Fast', icon: 'zap' },
+  { title: 'Secure', icon: 'shield' },
+]
+
+// Render with DynamicIcon
+{features.map(f => (
+  <DynamicIcon name={f.icon} />
+))}
+```
+
+---
+
+## 20. Route Transitions
+
+### AnimatePresence Setup
+Route transitions are handled in `RootLayout` using Framer Motion's `AnimatePresence`:
+
+```tsx
+// src/layouts/RootLayout.tsx
+import { AnimatePresence, motion } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
+
+export function RootLayout() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <Outlet />
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+```
+
+### Customizing Transitions
+Modify the `pageTransition` variants in `RootLayout.tsx` for different effects:
+
+```typescript
+// Fade up transition
+const pageTransition = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 },
+};
+
+// Scale transition
+const pageTransition = {
+  initial: { opacity: 0, scale: 0.95 },
+  animate: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, scale: 1.05 },
+};
+```
+
+---
+
+## 21. Bundle Analysis
+
+### Running Analysis
+```bash
+npm run analyze
+```
+
+This builds the project with `rollup-plugin-visualizer` and opens an interactive treemap showing:
+- Bundle composition by module
+- Gzip and Brotli sizes
+- Dependency tree visualization
+
+### Optimizations Applied
+1. **Vendor Chunking**: React, Router, and UI libraries split into separate chunks
+2. **Lazy Loading**: All pages loaded via `React.lazy()` for route-based code splitting
+3. **Console Stripping**: `console.log` and `debugger` removed in production builds
+4. **Tree Shaking**: DynamicIcon uses whitelist to prevent unused icon imports
+
+---
+
 ## Summary
 
 1. **No hardcoded strings** - Use `UI_LABELS` or API data with `DEFAULTS` fallback

@@ -7,3 +7,4 @@ export { AccessibilityWidget } from './AccessibilityWidget';
 export { ToastContainer } from './ToastContainer';
 export { SEO } from './SEO';
 export { GlobalLoadingBar } from './GlobalLoadingBar';
+export { DynamicIcon, AVAILABLE_ICONS } from './DynamicIcon';

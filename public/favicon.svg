@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <style>
+    .icon { fill: #1a1a1a; }
+    @media (prefers-color-scheme: dark) {
+      .icon { fill: #ffffff; }
+    }
+  </style>
+  <!-- Vite-inspired lightning bolt -->
+  <path class="icon" d="M17.5 3L6 18h8l-2 11L26 14h-8l2-11h-2.5z"/>
+</svg>

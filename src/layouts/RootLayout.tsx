@@ -5,14 +5,16 @@
  * Includes global elements like the navbar, footer, and toast container.
  */
 
-import { Outlet, ScrollRestoration } from 'react-router-dom';
+import { Outlet, ScrollRestoration, useLocation } from 'react-router-dom';
 import { Suspense } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   AccessibilityWidget,
   ToastContainer,
   GlobalLoadingBar,
 } from '@/components/shared';
+import { DURATION, EASING } from '@/lib/animations';
 
 /**
  * Page loading fallback
@@ -45,7 +47,30 @@ function PageLoadingFallback() {
   );
 }
 
+/**
+ * Page transition variants
+ */
+const pageTransition = {
+  initial: { opacity: 0 },
+  animate: {
+    opacity: 1,
+    transition: {
+      duration: DURATION.fast,
+      ease: EASING.easeOut,
+    },
+  },
+  exit: {
+    opacity: 0,
+    transition: {
+      duration: DURATION.instant,
+      ease: EASING.easeIn,
+    },
+  },
+};
+
 export function RootLayout() {
+  const location = useLocation();
+
   return (
     <div className="relative min-h-screen flex flex-col">
       {/* Global loading bar */}
@@ -54,10 +79,21 @@ export function RootLayout() {
       {/* Scroll restoration for SPA navigation */}
       <ScrollRestoration />
 
-      {/* Main content area with suspense for lazy-loaded routes */}
-      <Suspense fallback={<PageLoadingFallback />}>
-        <Outlet />
-      </Suspense>
+      {/* Main content area with page transitions */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={location.pathname}
+          variants={pageTransition}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          className="flex-1 flex flex-col"
+        >
+          <Suspense fallback={<PageLoadingFallback />}>
+            <Outlet />
+          </Suspense>
+        </motion.div>
+      </AnimatePresence>
 
       {/* Global accessibility widget */}
       <AccessibilityWidget position="bottom-end" />
