@@ -19,7 +19,7 @@
     // Utilities
     "mikestead.dotenv",
     "yoavbls.pretty-ts-errors",
-    "pflannery.vscode-versionlens"
+    "legalfina.npm-version-lens"
   ],
   "unwantedRecommendations": []
 }
